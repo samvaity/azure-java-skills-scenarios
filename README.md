@@ -31,34 +31,39 @@ scenarios/
 ├── _template/                         # Copy this to create a new scenario
 ├── blob-storage-manager/              # Azure Blob Storage CRUD utility
 │   ├── prompt.md                      # The prompt to give the LLM
+│   ├── validation.md                  # Post-generation evaluation criteria
 │   ├── baseline/                      # LLM output WITHOUT skills
+│   │   ├── sync/
+│   │   └── async/
 │   └── with-skills/                   # LLM output WITH skills
-├── keyvault-secret-config/            # Key Vault-backed config provider
-├── cosmos-todo-repository/            # Cosmos DB CRUD repository
-├── servicebus-order-processor/        # Service Bus order messaging
-├── appconfig-feature-flags/           # App Configuration feature flags
-├── storage-keyvault-encrypted-uploader/ # Cross-service: encrypted blob upload
-├── identity-credential-chain/         # Credential chain per environment
-└── blob-event-notifier/               # Blob events via Event Grid
+│       ├── sync/
+│       └── async/
+├── keyvault-secret-config/
+├── cosmos-todo-repository/
+├── servicebus-order-processor/
+├── appconfig-feature-flags/
+├── storage-keyvault-encrypted-uploader/
+├── identity-credential-chain/
+└── blob-event-notifier/
 
 docs/
 └── evaluation-guide.md
 ```
 
-Each scenario is self-contained: the `prompt.md` is the input, and `baseline/` and `with-skills/` hold the LLM outputs for comparison.
+Each scenario is self-contained: `prompt.md` is the input, `validation.md` has the evaluation criteria, and `baseline/` and `with-skills/` hold the LLM outputs (each split into `sync/` and `async/` subdirectories).
 
 ## Scenarios
 
-| Scenario | Azure Services | Description |
-|----------|---------------|-------------|
-| [blob-storage-manager](scenarios/blob-storage-manager/prompt.md) | Blob Storage | Upload, download, list, delete blobs via a service class |
-| [keyvault-secret-config](scenarios/keyvault-secret-config/prompt.md) | Key Vault, Identity | Config provider that reads and caches Key Vault secrets |
-| [cosmos-todo-repository](scenarios/cosmos-todo-repository/prompt.md) | Cosmos DB | CRUD repository for a ToDo app with partition key handling |
-| [servicebus-order-processor](scenarios/servicebus-order-processor/prompt.md) | Service Bus | Send and receive order messages with batch support |
-| [appconfig-feature-flags](scenarios/appconfig-feature-flags/prompt.md) | App Configuration | Feature flag evaluation with targeting rules |
-| [storage-keyvault-encrypted-uploader](scenarios/storage-keyvault-encrypted-uploader/prompt.md) | Blob Storage, Key Vault | Encrypt data with a Key Vault key, upload to Blob Storage |
-| [identity-credential-chain](scenarios/identity-credential-chain/prompt.md) | Identity | Build different credential chains for dev / CI / production |
-| [blob-event-notifier](scenarios/blob-event-notifier/prompt.md) | Blob Storage, Event Grid | Process blob-created/deleted events from Event Grid |
+| Scenario | Azure Services | Prompt | Validation |
+|----------|---------------|--------|------------|
+| blob-storage-manager | Blob Storage | [prompt](scenarios/blob-storage-manager/prompt.md) | [validation](scenarios/blob-storage-manager/validation.md) |
+| keyvault-secret-config | Key Vault, Identity | [prompt](scenarios/keyvault-secret-config/prompt.md) | [validation](scenarios/keyvault-secret-config/validation.md) |
+| cosmos-todo-repository | Cosmos DB | [prompt](scenarios/cosmos-todo-repository/prompt.md) | [validation](scenarios/cosmos-todo-repository/validation.md) |
+| servicebus-order-processor | Service Bus | [prompt](scenarios/servicebus-order-processor/prompt.md) | [validation](scenarios/servicebus-order-processor/validation.md) |
+| appconfig-feature-flags | App Configuration | [prompt](scenarios/appconfig-feature-flags/prompt.md) | [validation](scenarios/appconfig-feature-flags/validation.md) |
+| storage-keyvault-encrypted-uploader | Blob Storage, Key Vault | [prompt](scenarios/storage-keyvault-encrypted-uploader/prompt.md) | [validation](scenarios/storage-keyvault-encrypted-uploader/validation.md) |
+| identity-credential-chain | Identity | [prompt](scenarios/identity-credential-chain/prompt.md) | [validation](scenarios/identity-credential-chain/validation.md) |
+| blob-event-notifier | Blob Storage, Event Grid | [prompt](scenarios/blob-event-notifier/prompt.md) | [validation](scenarios/blob-event-notifier/validation.md) |
 
 ## Quick Start
 
@@ -66,7 +71,8 @@ Each scenario is self-contained: the `prompt.md` is the input, and `baseline/` a
 2. **Run baseline** — give the prompt to Copilot/LLM without any skills installed. Save output into that scenario's `baseline/` directory.
 3. **Install skills** — `npx skills add microsoft/skills --skill azure-sdk-java`
 4. **Run with skills** — give the same prompt in a fresh session. Save output into `with-skills/`.
-5. **Compare** — evaluate both outputs against the criteria in [docs/evaluation-guide.md](docs/evaluation-guide.md)
+5. **Validate** — use the scenario's `validation.md` to evaluate both outputs.
+6. **Compare** — follow the full process in [docs/evaluation-guide.md](docs/evaluation-guide.md) to produce a scored comparison.
 
 ## Adding Scenarios
 

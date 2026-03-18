@@ -29,3 +29,6 @@ build/
 # Environment
 .env
 .env.local
+
+# Evaluation working files
+evaluation-results.md

@@ -8,7 +8,8 @@
    ```
 2. Give it a descriptive kebab-case directory name (e.g., `cosmos-todo-repository`)
 3. Replace `prompt.md` with your plain-language prompt (see guidelines below)
-4. Submit a PR
+4. Replace `validation.md` with scenario-specific evaluation criteria
+5. Submit a PR
 
 ## Naming Conventions
 
@@ -28,10 +29,12 @@ scenarios/storage-keyvault-encrypted-uploader/
 
 ### Result Files
 
-Save LLM outputs inside each scenario's `baseline/` or `with-skills/` directory, including the date and model in the filename:
+Save LLM outputs inside each scenario's `baseline/` or `with-skills/` directory. The LLM creates `sync/` and `async/` subdirectories within each:
 ```
-scenarios/blob-storage-manager/baseline/2026-03-17-gpt4o.md
-scenarios/blob-storage-manager/with-skills/2026-03-17-gpt4o.md
+scenarios/blob-storage-manager/baseline/sync/...
+scenarios/blob-storage-manager/baseline/async/...
+scenarios/blob-storage-manager/with-skills/sync/...
+scenarios/blob-storage-manager/with-skills/async/...
 ```
 
 ## Prompt Guidelines
@@ -48,10 +51,11 @@ Each `prompt.md` should be a plain natural-language request — the kind of thin
 
 ## Workflow
 
-1. **Write the scenario** — create the directory and `prompt.md`
+1. **Write the scenario** — create the directory with `prompt.md` and `validation.md`
 2. **Run baseline** (no skills) — save output in the scenario's `baseline/` directory
 3. **Run with skills** — save output in the scenario's `with-skills/` directory
-4. **Compare** — evaluate per [docs/evaluation-guide.md](docs/evaluation-guide.md)
+4. **Validate** — use the scenario's `validation.md` to evaluate each output
+5. **Compare** — follow [docs/evaluation-guide.md](docs/evaluation-guide.md) for the full scoring process
 
 ## Scenario Quality Checklist
 
@@ -61,6 +65,7 @@ Before submitting a scenario, ensure:
 - [ ] The prompt asks for something non-trivial (multiple classes, realistic task)
 - [ ] The scenario tests SDK patterns where skills should make a measurable difference
 - [ ] Cross-service scenarios name all services involved
+- [ ] The `validation.md` includes automated checks and SDK quality criteria
 
 ## Questions?
 
