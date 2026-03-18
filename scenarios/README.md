@@ -1,49 +1,52 @@
 # Scenarios
 
-This directory contains test scenarios organized by Azure service. Each scenario is a markdown file describing a coding task to give an LLM, along with criteria to evaluate the response.
+Each subdirectory here is a self-contained test scenario. It contains a `prompt.md` (the plain-language request to give an LLM) and two output directories for recording the results.
 
 ## Directory Layout
 
 ```
 scenarios/
-├── _template.md      # Copy this to create a new scenario
-├── storage/           # Azure Blob Storage scenarios
-├── identity/          # Azure Identity scenarios
-└── keyvault/          # Azure Key Vault scenarios
+├── _template/                         # Copy this directory to create a new scenario
+│   ├── prompt.md
+│   ├── baseline/
+│   └── with-skills/
+├── blob-storage-manager/
+│   ├── prompt.md                      # The prompt — paste this into the LLM
+│   ├── baseline/                      # Save LLM output here (no skills)
+│   └── with-skills/                   # Save LLM output here (with skills)
+├── keyvault-secret-config/
+├── cosmos-todo-repository/
+├── servicebus-order-processor/
+├── appconfig-feature-flags/
+├── storage-keyvault-encrypted-uploader/
+├── identity-credential-chain/
+└── blob-event-notifier/
 ```
 
 ## How to Use
 
-1. **Copy the template:** `cp _template.md storage/my-scenario.md`
-2. **Fill in all sections** — especially the Prompt, Expected Behavior, and Red Flags
-3. **Test it yourself** — run the prompt against an LLM to make sure it's a good test
+1. Open a scenario's `prompt.md` and copy the full text.
+2. Paste it into your LLM / coding agent (Copilot Chat, Claude, etc.).
+3. Save the output into `baseline/` or `with-skills/` depending on the run.
 
-## Writing Good Scenarios
+See [docs/evaluation-guide.md](../docs/evaluation-guide.md) for the full step-by-step evaluation process.
 
-### Prompts Should Be
+## Creating a New Scenario
 
-- **Self-contained** — no external context needed
-- **Specific** — "Create a BlobServiceClient using DefaultAzureCredential" not "do some blob stuff"
-- **Realistic** — tasks a real developer would encounter
+```bash
+cp -r _template my-new-scenario
+```
 
-### Expected Behavior Should Be
+Then replace the contents of `my-new-scenario/prompt.md` with your plain-language prompt.
 
-- **Verifiable** — can you check yes/no by reading the code?
-- **Important** — not style preferences, but correctness/best-practice items
+### Writing Good Prompts
 
-### Good Scenario Ideas
+- **Self-contained** — no external context needed; the prompt is everything the LLM sees.
+- **Specific** — name the classes, methods, and services. Don't say "do some blob stuff".
+- **Realistic** — a task a real Java developer might ask a coding agent to do.
+- **Small project scope** — target 2–4 Java classes, 1–2 Azure services, Maven project. This is complex enough to be meaningful but small enough to evaluate by reading the output.
+- **No evaluation criteria in the prompt** — the prompt is what the LLM sees. Evaluation criteria live in [docs/evaluation-guide.md](../docs/evaluation-guide.md) and in the evaluator's judgment.
 
-Cross-cutting scenarios are especially valuable:
+### Cross-Service Scenarios
 
-| Scenario Type | Example |
-|---------------|---------|
-| Auth + Storage | Authenticate with DefaultAzureCredential, upload a blob |
-| KeyVault + Identity | Store a secret, retrieve it using managed identity |
-| Storage + KeyVault | Use a Key Vault key to encrypt blob storage data |
-| All three | App that reads config from Key Vault, uses identity for auth, stores data in blob |
-
-### Scenario Complexity Levels
-
-- **Easy:** Single SDK operation (e.g., "create a BlobServiceClient")
-- **Medium:** Multiple operations combined (e.g., "upload a blob with metadata and SAS token")
-- **Hard:** Cross-service, nuanced patterns (e.g., "set up managed identity auth chain for storage with Key Vault-backed secrets")
+Cross-service scenarios (e.g., Key Vault + Storage, Identity + multiple services) are especially valuable because they test whether the LLM can correctly combine multiple Azure SDKs, share credentials, and handle different exception types.

@@ -27,28 +27,46 @@ The `microsoft/skills` repo contains auto-generated "skills" — structured know
 ## Repo Structure
 
 ```
-scenarios/           # Test scenarios organized by Azure service
-  ├── storage/       # Azure Blob Storage scenarios
-  ├── identity/      # Azure Identity scenarios
-  └── keyvault/      # Azure Key Vault scenarios
+scenarios/
+├── _template/                         # Copy this to create a new scenario
+├── blob-storage-manager/              # Azure Blob Storage CRUD utility
+│   ├── prompt.md                      # The prompt to give the LLM
+│   ├── baseline/                      # LLM output WITHOUT skills
+│   └── with-skills/                   # LLM output WITH skills
+├── keyvault-secret-config/            # Key Vault-backed config provider
+├── cosmos-todo-repository/            # Cosmos DB CRUD repository
+├── servicebus-order-processor/        # Service Bus order messaging
+├── appconfig-feature-flags/           # App Configuration feature flags
+├── storage-keyvault-encrypted-uploader/ # Cross-service: encrypted blob upload
+├── identity-credential-chain/         # Credential chain per environment
+└── blob-event-notifier/               # Blob events via Event Grid
 
-results/             # Evaluation results
-  ├── baseline/      # LLM output WITHOUT skills
-  └── with-skills/   # LLM output WITH skills
-
-docs/                # Guides and documentation
-  └── evaluation-guide.md
+docs/
+└── evaluation-guide.md
 ```
+
+Each scenario is self-contained: the `prompt.md` is the input, and `baseline/` and `with-skills/` hold the LLM outputs for comparison.
+
+## Scenarios
+
+| Scenario | Azure Services | Description |
+|----------|---------------|-------------|
+| [blob-storage-manager](scenarios/blob-storage-manager/prompt.md) | Blob Storage | Upload, download, list, delete blobs via a service class |
+| [keyvault-secret-config](scenarios/keyvault-secret-config/prompt.md) | Key Vault, Identity | Config provider that reads and caches Key Vault secrets |
+| [cosmos-todo-repository](scenarios/cosmos-todo-repository/prompt.md) | Cosmos DB | CRUD repository for a ToDo app with partition key handling |
+| [servicebus-order-processor](scenarios/servicebus-order-processor/prompt.md) | Service Bus | Send and receive order messages with batch support |
+| [appconfig-feature-flags](scenarios/appconfig-feature-flags/prompt.md) | App Configuration | Feature flag evaluation with targeting rules |
+| [storage-keyvault-encrypted-uploader](scenarios/storage-keyvault-encrypted-uploader/prompt.md) | Blob Storage, Key Vault | Encrypt data with a Key Vault key, upload to Blob Storage |
+| [identity-credential-chain](scenarios/identity-credential-chain/prompt.md) | Identity | Build different credential chains for dev / CI / production |
+| [blob-event-notifier](scenarios/blob-event-notifier/prompt.md) | Blob Storage, Event Grid | Process blob-created/deleted events from Event Grid |
 
 ## Quick Start
 
-1. **Pick a scenario** from `scenarios/` (or create one using the [template](scenarios/_template.md))
-2. **Run baseline** — give the prompt to Copilot/LLM without any skills installed. Save output to `results/baseline/`
+1. **Pick a scenario** from the table above (or create one using the [template](scenarios/_template/prompt.md))
+2. **Run baseline** — give the prompt to Copilot/LLM without any skills installed. Save output into that scenario's `baseline/` directory.
 3. **Install skills** — `npx skills add microsoft/skills --skill azure-sdk-java`
-4. **Run with skills** — give the same prompt. Save output to `results/with-skills/`
-5. **Compare** — check the expected behavior checklist and red flags
-
-See [docs/evaluation-guide.md](docs/evaluation-guide.md) for the full step-by-step process.
+4. **Run with skills** — give the same prompt in a fresh session. Save output into `with-skills/`.
+5. **Compare** — evaluate both outputs against the criteria in [docs/evaluation-guide.md](docs/evaluation-guide.md)
 
 ## Adding Scenarios
 
