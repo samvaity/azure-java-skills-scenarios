@@ -13,7 +13,7 @@ The project needs:
 
 - A **configuration/factory class** that connects securely to the Key Vault using the vault URL from an environment variable. The application runs in Azure and should authenticate using managed identity — no client secrets or certificates in code.
 
-- A **secret rotation helper** that safely rotates a secret: it should delete the old secret (which in Key Vault is a long-running operation when soft-delete is enabled — the code must wait for the delete to fully complete before proceeding), then create the new secret with an updated value and expiry date. This should handle the long-running nature of the delete operation properly rather than assuming it's instantaneous.
+- A **secret rotation helper** that safely rotates a secret: delete the old secret, ensure the deletion is fully complete, then create the new secret with an updated value and expiry date. The rotation must be safe — don't assume deletion is instantaneous, since Key Vault's soft-delete feature means the secret may not be immediately gone.
 
 - A **Main class** that demos both implementations: loading several config keys at startup, reading them from cache, refreshing one, printing a warning if any secret is near expiry, and performing a secret rotation (delete old, wait for completion, create new). Run the full demo with the sync implementation first, then repeat with the async implementation.
 

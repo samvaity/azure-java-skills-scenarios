@@ -78,15 +78,6 @@ Each scenario is self-contained: `prompt.md` is the input, `validation.md` has t
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) and [scenarios/README.md](scenarios/README.md).
 
-## Team
-
-| Name | Role |
-|------|------|
-| Sameeksha Vaity | Java SDK SME, Scenario author |
-| Jonathan Giles | Java SDK SME, Scenario author |
-| Kay Venkatrajan | Skills coordination |
-| Josh Free | Executive sponsor |
-
 ## Related Repos
 
 - [microsoft/skills](https://github.com/microsoft/skills) — The skills repo (source of truth for skill content)

@@ -7,7 +7,7 @@ Create a small Java 17 Maven project that provides a reusable Azure Blob Storage
 
 The project needs:
 
-- A **service class** (both sync and async versions) that wraps blob operations: upload (with optional metadata and blob index tags for later querying), download, list blobs in a container, and delete. The upload method should handle large files efficiently — if the file is over a configurable size threshold, it should use parallel block uploads with a configurable block size rather than a single-shot upload. The service should also support acquiring a lease on a blob before overwriting it, so that concurrent writers don't clobber each other.
+- A **service class** (both sync and async versions) that wraps blob operations: upload (with optional metadata and blob index tags for later querying), download, list blobs in a container, and delete. The upload method should handle large files efficiently so that uploading a multi-gigabyte file doesn't load the entire thing into memory or fail on slow connections. The service should also prevent concurrent writers from overwriting each other's changes when updating the same blob.
 
 - A **configuration class** that connects to Azure securely using the storage account endpoint (from an environment variable). No connection strings or account keys should be used — the app will run in Azure with managed identity. The configuration should set up a custom retry policy (exponential backoff, configurable max retries and delay) and a per-request timeout, so the app behaves predictably under transient failures. It should also enable HTTP request/response logging at a configurable level for debugging.
 
